@@ -28,9 +28,23 @@ namespace RuleParser
             Console.WriteLine($"Parsing rule '{rulePart}'");
             totalRule = rulePart;
             //step one create sub sections
-            while (totalRule.IndexOf('(') >= 0)
+            int startIndex;
+            int searchstart = 0;
+            while ((startIndex = totalRule.IndexOf('(', searchstart)) >= 0) // temp disable sub rules
             {
-                var startIndex = totalRule.IndexOf('(');
+                //todo check if it is a vallid opening or it is inside the rule
+                var before = startIndex > 0 ? totalRule[startIndex - 1] : ' ';
+                if (before != ' ')
+                {
+                    var ind2 = startIndex;
+                    if(before == '(')//if it is a bracket go back to find the first character before the brackets
+                        while ((before = --ind2 > 0? totalRule[ind2] : ' ') == '(') ;//go back to the first character that was not a '(' if the index is before 0, before will be ' '
+                    if (before != ' ')//still not a whitespace? well it is not a subrule then!
+                    {
+                        searchstart = startIndex + 1;
+                        continue;//nope not a subrule!
+                    }
+                }
                 var dept = 1;
                 var endIndex = startIndex;
                 while (dept > 0)
